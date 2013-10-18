@@ -1,0 +1,13 @@
+#!/bin/bash
+
+cd ../inkscape
+src=`pwd`
+
+cd $HOME/.config/inkscape/extensions
+for f in `ls $src`;
+do
+	if [[ ! -f $f ]];
+	then
+		ln -s "$src/$f"
+	fi
+done;

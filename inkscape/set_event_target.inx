@@ -1,0 +1,16 @@
+<inkscape-extension>
+  <_name>Set event target</_name>
+  <id>org.ekips.filter.set_event_target</id>
+  <dependency type="executable" location="extensions">set_event_target.py</dependency>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+
+  <effect needs-live-preview="false">
+    <object-type>all</object-type>
+    <effects-menu>
+       <submenu _name="HERS toolbox"/>
+    </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">set_event_target.py</command>
+  </script>
+</inkscape-extension>

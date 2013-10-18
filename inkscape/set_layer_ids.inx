@@ -1,0 +1,16 @@
+<inkscape-extension>
+  <_name>Set layer IDs</_name>
+  <id>org.ekips.filter.set_layer_ids</id>
+  <dependency type="executable" location="extensions">set_layer_ids.py</dependency>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+
+  <effect needs-live-preview="false">
+    <object-type>all</object-type>
+    <effects-menu>
+       <submenu _name="HERS toolbox"/>
+    </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">set_layer_ids.py</command>
+  </script>
+</inkscape-extension>

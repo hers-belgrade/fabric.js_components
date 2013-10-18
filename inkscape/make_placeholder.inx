@@ -1,0 +1,19 @@
+<inkscape-extension>
+  <_name>Make Placeholder</_name>
+  <id>org.ekips.filter.make_placeholder</id>
+  <dependency type="executable" location="extensions">make_placeholder.py</dependency>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+
+  <param name="name" type="string" _gui-text="What will be name of your placeholder?">noname</param>
+	<param name="width" type="float" min="1" max="1000000" _gui-text="Provide width">0</param>
+	<param name="height" type="float" min="1" max="1000000" _gui-text="Provide height">0</param>
+  <effect needs-live-preview="false">
+    <object-type>all</object-type>
+    <effects-menu>
+       <submenu _name="HERS toolbox"/>
+    </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">make_placeholder.py</command>
+  </script>
+</inkscape-extension>
