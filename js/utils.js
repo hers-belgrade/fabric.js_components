@@ -7,17 +7,40 @@ fabric_helpers.isLayer = function (obj) {
 	return ('group' === obj.type && 'layer' === obj.inkscapeGroupMode);
 }
 
-fabric_helpers.find_event_target = function (root) {
+fabric_helpers.find_element_with_attribute = function (root, attr, val) {
 	if (!root) return undefined;
-	if (root['inkscape:event_target'] == 'true') return root;
+	if (root[attr] == val) return root;
 	if (!root._objects) return undefined;
-
 	for (var i in root._objects)  {
-		var r = fabric_helpers.find_event_target(root._objects[i]);
+		var r = fabric_helpers.find_element_with_attribute(root._objects[i], attr, val);
 		if (r) return r;
 	}
 	return undefined;
 }
+
+fabric_helpers.find_event_target = function (root) {
+	return fabric_helpers.find_element_with_attribute(root, 'inkscape:event_target', 'true');
+}
+
+fabric_helpers.find_component_element = function (root, name) {
+	return fabric_helpers.find_element_with_attribute(root, 'component_element', name);
+}
+
+fabric_helpers.find_component = function (root, name, els) {
+	var container = fabric_helpers.find_element_with_attribute(root, 'component', name);
+	var ret = { container: container }
+	if (els) {
+		for (var i in els) {
+			var ce = els[i];
+			ret[ce] = fabric_helpers.find_element_with_attribute(root, 'component_element', ce);
+		}
+	}
+
+	return ret;
+}
+
+
+
 
 function CanvasAware (canvas) {
 	if (!arguments.length) return;
@@ -34,3 +57,15 @@ function CallBackable (cb_map) {
 		functions.safe_call.apply(null, [cb_map[what]].concat(Array.prototype.slice.call(arguments, 1)));
 	}
 }
+
+
+function GUI_Component (struct, do_render) {
+	if (!arguments.length) return;
+	this.elements = fabric_helpers.find_component(struct, this.type(), this.mandatoryElements());
+	var me = this.mandatoryElements();
+	for (var i in me) {
+		if (!this.elements[me[i]]) throw "Missing "+me[i];
+	}
+	this.render = function ()  { functions.safe_call(do_render); }
+}
+

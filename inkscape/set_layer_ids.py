@@ -25,15 +25,40 @@ class SetLayerIDS (inkex.Effect):
 		inkex.Effect.__init__(self)
 	
 	def effect(self):
+
+		r=["J","Q","K"]
+		s=["c","d","s","h"]
+
+
+		for rank in r:
+			for suite in s:
+				path = '//*[@id="'+rank+suite+'_fill"]'
+
+				elements = self.document.xpath(path, namespaces=NSS)
+				for node in elements:
+					destr = []
+					ch = list(node)
+					for chld in ch:
+						destr.append(chld)
+
+					for chld in destr:
+						inkex.debug(chld)
+						#node.remove(chld)
+
+		inkex.debug('done')
+
+"""
 		path = '//*[@inkscape:groupmode="layer"]'
 		elements = self.document.xpath(path, namespaces=NSS)
 		p = '{'+ns+'}'
 		for node in elements:
 			node.set('id',node.get(p+'label'));
+"""
 
 
 
 
 
-eff = SetLayerIDS();
-eff.affect();
+eff = SetLayerIDS()
+eff.affect()
+
