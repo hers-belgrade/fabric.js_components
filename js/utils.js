@@ -1,16 +1,10 @@
-fabric_helpers = {};
+var functions = {};
+functions.safe_call = function (f) {
+	('function' === typeof(f)) && f.apply(this, Array.prototype.slice.call(arguments, 1));
+}
+var fabric_helpers = {};
 fabric_helpers.isLayer = function (obj) {
 	return ('group' === obj.type && 'layer' === obj.inkscapeGroupMode);
-}
-
-fabric_helpers.getInkscapeLayers = function (obj) {
-	var ret = [];
-	for (var i in obj._objects) {
-		var o = obj._objects[i];
-		if (o.inkscapeGroupMode !== 'layer') continue;
-		ret.push (o);
-	}
-	return ret;
 }
 
 fabric_helpers.find_event_target = function (root) {
@@ -25,11 +19,18 @@ fabric_helpers.find_event_target = function (root) {
 	return undefined;
 }
 
-fabric_helpers.show_layer = function (l, ctx) {
-	l && (l.set({'opacity':1, 'display':'inline'}) || true) && ctx && ctx.renderAll();
+function CanvasAware (canvas) {
+	if (!arguments.length) return;
+	this.canvas = canvas;
 }
 
-fabric_helpers.hide_layer = function (l,ctx) {
-	l && (l.set({'opacity':0, 'display':'none'}) || true) && ctx && ctx.renderAll();
+CanvasAware.prototype.renderAll = function () {
+	this.canvas && this.canvas.renderAll();
 }
 
+function CallBackable (cb_map) {
+	this.invoke = function (what) {
+		if (!cb_map) return;
+		functions.safe_call.apply(null, [cb_map[what]].concat(Array.prototype.slice.call(arguments, 1)));
+	}
+}

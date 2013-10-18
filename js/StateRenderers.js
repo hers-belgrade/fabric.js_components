@@ -1,18 +1,15 @@
 function SVGStateRenderer (svg_struct, resources) {
 	if (!arguments.length) return;
-	this.obj = svg_struct;
+	Layer.prototype.constructor.call(this, svg_struct);
 	this.resources = resources;
 }
 
-SVGStateRenderer.prototype.hide = function () {
-	fabric_helpers.hide_layer(this.obj);
-}
-SVGStateRenderer.prototype.show = function () {
-	fabric_helpers.show_layer(this.obj);
-}
+SVGStateRenderer.prototype = new Layer();
+SVGStateRenderer.prototype.constructor = SVGStateRenderer;
 
 SVGStateRenderer.prototype.init = function () {
 }
+
 
 function SVGStateableRenderer (svg_struct, states, do_render) {
 	if (!arguments.length) return;
@@ -21,8 +18,6 @@ function SVGStateableRenderer (svg_struct, states, do_render) {
 	this.state = undefined;
 
 	this.render = function () { ('function' === typeof(do_render)) && do_render(); }
-
-
 }
 
 SVGStateableRenderer.prototype.init = function (state) {

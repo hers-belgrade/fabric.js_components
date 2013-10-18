@@ -1,10 +1,14 @@
-function ButtonGroup (struct, do_render) {
+function ButtonGroup (struct,config, do_render) {
 	var objs = struct._objects;
 	this.buttons = {};
+	config = config || {};
 	for (var i in objs) {
 		if (!fabric_helpers.isLayer(objs[i])) continue;
 		var b = new Button(objs[i], do_render);
 		this.buttons[b.name()] = b;
+		var c = config[b.name()];
+		(c.initState) && b.setState(c.initState);
+		(c.onClicked) && b.onClicked(c.onClicked);
 	}
 }
 
@@ -17,6 +21,13 @@ ButtonGroup.prototype.button = function (name) {
 		return ret;
 	}
 	return this.buttons[name];
+}
+
+ButtonGroup.prototype.forEach = function (cb) {
+	if ('function' !== typeof(cb)) return;
+	for(var i in this.buttons) {
+		cb (this.buttons[i],i, this);
+	}
 }
 
 
@@ -44,7 +55,7 @@ function FourStateComponent (fs_layer,do_render) {
 	this.onClicked = function (cb) {click_cb = cb;}
 
 	var states = {'enabled':undefined, 'disabled':undefined, 'hovered':undefined, 'pressed':undefined};
-	var layers = fabric_helpers.getInkscapeLayers(fs_layer);
+	var layers = Layer.getLayers(fs_layer);
 
 	function get_layer (state) {
 		return fs_layer[fs_layer.id+'_'+state];
@@ -81,8 +92,9 @@ function FourStateComponent (fs_layer,do_render) {
 
 	var require_hover = !fabric.isTouchSupported;
 
+
 	enabled.on('object:over', function () {
-		/// won't happen if !require_hover
+		/// won't happen if !require_hove
 		SVGStateableRenderer.prototype.setState.call(self,'hovered') &&  self.render();//was state change successfull?
 	});
 
