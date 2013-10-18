@@ -61,6 +61,7 @@ function CallBackable (cb_map) {
 
 function GUI_Component (struct, do_render) {
 	if (!arguments.length) return;
+	fabric.util.object.extend(this, fabric.Observable);
 	this.elements = fabric_helpers.find_component(struct, this.type(), this.mandatoryElements());
 	var me = this.mandatoryElements();
 	for (var i in me) {
