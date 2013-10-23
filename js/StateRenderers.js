@@ -1,35 +1,21 @@
-function SVGStateRenderer (svg_struct, resources) {
+function SVGStateRenderer (env, svg_struct, resources) {
 	if (!arguments.length) return;
-	Layer.prototype.constructor.call(this, svg_struct);
+	Immediate_GUI_Component.prototype.constructor.call(this, env, svg_struct);
 	this.resources = resources;
 }
 
-SVGStateRenderer.prototype = new Layer();
+SVGStateRenderer.prototype = new Immediate_GUI_Component();
 SVGStateRenderer.prototype.constructor = SVGStateRenderer;
 
-SVGStateRenderer.prototype.init = function () {
-}
-
-
-function SVGStateableRenderer (svg_struct, states, do_render) {
+function SVGStateableRenderer (env,obj, states, do_render) {
 	if (!arguments.length) return;
-	this.obj = svg_struct;
+	Immediate_GUI_Component.prototype.constructor.call(this, env, obj, do_render);
 	this.states = states;
 	this.state = undefined;
-
-	this.render = function () { ('function' === typeof(do_render)) && do_render(); }
 }
 
-SVGStateableRenderer.prototype.init = function (state) {
-
-	if (!state) throw "No state, I am unable to move on";
-
-	for (var i in this.states) {
-		this.states[i].init();
-		this.states[i].hide();
-	}
-	this.setState(state);
-}
+SVGStateableRenderer.prototype = new Immediate_GUI_Component();
+SVGStateableRenderer.prototype.constructor = SVGStateableRenderer;
 
 SVGStateableRenderer.prototype.setState = function (state) {
 	if (!state) return;

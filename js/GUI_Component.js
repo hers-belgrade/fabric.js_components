@@ -1,109 +1,64 @@
-function GUI_Component (struct, do_render) {
-	if (!arguments.length) return;
-	fabric.util.object.extend(this, fabric.Observable);
-	this.type = function () {return struct.component;}
+function GUI_Component (path, canvas, struct,config, ready) {
+	if (!struct) return;
+	struct.path = function () {return path;}
+}
 
-	this.elements = fabric_helpers.find_component(struct, this.type(), this.mandatoryElements());
-	var me = this.mandatoryElements();
-	for (var i in me) {
-		if (!this.elements[me[i]]) throw "Missing "+me[i];
+/*
+ * Create component from loaded function immediately...
+ */
+function Immediate_GUI_Component (name,canvas, struct,config, ready) {
+	if (!struct) return;
+	GUI_Component(name, canvas, struct,config, ready);
+
+
+	config = fabric.util.object.extend(
+			{}, 
+			{ 'init_visible': true, 'auto_add': false}, 
+			config
+	);
+
+	(config.auto_add) && canvas.add(struct);
+	(config.init_visible) ? struct.show() : struct.hide();
+	//call ready right away ... 
+	('function' === typeof(ready)) && ready.call(struct);
+}
+
+/**Factory
+ *
+ */
+Create_GUI_Components = function (resources,canvas, items, success_cb, failed_cb) {
+	var got_it = {};
+
+	var failed = function(r) {
+		console.warn(r);
+		('function' === typeof(failed_cb)) && failed_cb(r);
+		return undefined;
 	}
-	this.render = function ()  { functions.safe_call(do_render); }
-	this.obj = struct;
 
-	this.process_arguments();
-}
-
-GUI_Component.prototype.mandatoryElements = function () {return undefined;}
-
-GUI_Component.prototype.process_arguments = function () {
-	this.component_arguments = fabric.util.object.extend({
-		init_visible:true
-	}, this.component_arguments)
-	var args = this.component_arguments;
-
-	///do actual processing ...
-	(args.init_visible) ? this.show() : this.hide();
-}
-
-GUI_Component.prototype.show = function () {
-	GUI_Component.show(this.layer, this.render);
-}
-
-GUI_Component.prototype.hide = function () {
-	GUI_Component.hide(this.layer, this.render);
-}
-
-GUI_Component.show = function (l, do_render) {
-	l && (l.set({'opacity':1, 'display':'inline'}) || true) && functions.safe_call(do_render);
-}
-
-GUI_Component.hide = function (l, do_render) {
-	l && (l.set({'opacity':0, 'display':'none'}) || true) && functions.safe_call(do_render);
-}
-//help me with layers ... show me, hide me, find layers within given structure ...
-//VERY VERY POSSIBLE THIS WILL BE GONE .... layer is jus a group ....
-function Layer (layer, do_render) {
-	if (!arguments.length) return;
-	GUI_Component.prototype.constructor.call(this, layer, do_render);
-}
-Layer.prototype = new GUI_Component();
-Layer.prototype.constructor = Layer;
-
-Layer.hideSubLayers = function (l,me_included, do_render) {
-	me_included && Layer.hide(l);
-	Layer.getLayers(l).forEach(function(v) {
-		Layer.hide(v);
-	});
-	functions.safe_call(do_render);
-}
-
-Layer.getLayers = function (obj) {
-	var ret = [];
-	for (var i in obj._objects) {
-		var o = obj._objects[i];
-		if (o.inkscapeGroupMode !== 'layer') continue;
-		ret.push (o);
+	var done = function (item) {
+		got_it[item.path()] = item;
+		for (var i in got_it) {
+			if (!got_it[i]) return;
+		}
+		console.log('jel se ovo ikad desilo');
+		('function' === typeof(success_cb)) && success_cb(got_it);
 	}
-	return ret;
+	for (var i in items) {
+		got_it[items[i].path] = false;
+	}
+
+
+	for (var i in items) {
+		(function (item) {
+			var f = item.type;
+			if ('function' !== typeof(f)) return failed('Invalid constructor for '+item.name);
+			var s = fabric_helpers.find_path(resources,item.path);
+			if (!s) failed('Invalid path '+item.path);
+
+			var si = f(item.path , canvas, s, item.config, function () {
+				done(this);
+			});
+
+		})(items[i]);
+	}
 }
-
-function Screen (layer, do_render) {
-	Layer.prototype.constructor.call(this, layer, do_render);
-	var args = layer.component_arguments;
-	//TODO: how to stop event propagating ?
-}
-
-Screen.prototype = new Layer();
-Screen.prototype.constructor = Screen;
-//DIALOG IS, actually, a combination of a content and different buttons and can be set onto a layer
-
-function Dialog (layer, do_render) {
-	if (!arguments.length) return;
-	//Dialog is event transparent ==> implementation of a Layer
-	Layer.prototype.constructor.call(this, layer, do_render);
-}
-
-Dialog.prototype = new Layer();
-Dialog.prototype.constructor = Dialog;
-
-function ModalDialog (layer, background_screen, do_render) {
-	if (arguments.length === 0) return;
-	Dialog.prototype.constructor.call(this, layer, do_render);
-	this.background_screen = (background_screen instanceof Screen) ? background_screen: (new Screen(background_screen));
-	this.hide();
-}
-
-ModalDialog.prototype = new Dialog();
-ModalDialog.prototype.constructor = ModalDialog;
-
-ModalDialog.prototype.show = function () {
-	this.background_screen.show();
-	Dialog.prototype.show.call(this);
-}
-
-ModalDialog.prototype.hide = function () {
-	this.background_screen.hide();
-	Dialog.prototype.hide.call(this);
-}
-

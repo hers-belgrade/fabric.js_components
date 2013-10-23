@@ -1,3 +1,4 @@
+/*
 function ButtonGroup (struct,config, do_render) {
 	var objs = struct._objects;
 	this.buttons = {};
@@ -29,14 +30,15 @@ ButtonGroup.prototype.forEach = function (cb) {
 		cb (this.buttons[i],i, this);
 	}
 }
+*/
 
 
 ///TODO: 1. discuss special state requirements ... do we really need FourStateComponentState? Should we propagate mouse control checks down to those specific states ?
 
-function FourStateComponent (fs_layer,do_render) {
+function FourStateComponent (env,fs_layer,do_render) {
 	if (!arguments.length) return;
 	function FourStateComponentState (svg_struct) {
-		SVGStateRenderer.prototype.constructor.call(this, svg_struct);
+		SVGStateRenderer.prototype.constructor.call(this,env, svg_struct);
 	}
 
 	FourStateComponentState.prototype = new SVGStateRenderer();
@@ -48,11 +50,11 @@ function FourStateComponent (fs_layer,do_render) {
 	var click_cb = null;
 
 	function on_click () {
-		('function' === typeof(click_cb)) && click_cb();
+		console.log('CE GA BIJEMO :D :D :D', self.fire.toString());
+		self.fire('clicked', self.id());
 	}
 
 	this.name = function () {return fs_layer.id;}
-	this.onClicked = function (cb) {click_cb = cb;}
 
 	var states = {'enabled':undefined, 'disabled':undefined, 'hovered':undefined, 'pressed':undefined};
 	var layers = Layer.getLayers(fs_layer);
@@ -83,7 +85,8 @@ function FourStateComponent (fs_layer,do_render) {
 	}
 
 
-	SVGStateableRenderer.prototype.constructor.call(this,fs_layer, states, do_render);
+	console.log('sta mi to imamo ovde?');
+	SVGStateableRenderer.prototype.constructor.call(this,env, fs_layer, states, do_render);
 	var self = this;
 
 	var enabled = fabric_helpers.find_event_target(get_layer('enabled'));
@@ -133,10 +136,6 @@ function FourStateComponent (fs_layer,do_render) {
 FourStateComponent.prototype = new SVGStateableRenderer();
 FourStateComponent.prototype.constructor = FourStateComponent;
 
-FourStateComponent.prototype.init = function () {
-	return this;
-}
-
 FourStateComponent.prototype.setState = function (state) {
 	if (state == 'hovered' || state == 'pressed') return false; ///not allowed from outside world
 	var s = SVGStateableRenderer.prototype.setState.call(this, state);
@@ -144,11 +143,21 @@ FourStateComponent.prototype.setState = function (state) {
 	return s;
 }
 
-
-function Button (layer, do_render) {
-	FourStateComponent.prototype.constructor.call(this, layer, do_render);
+function Button (env, layer, do_render) {
+	if (!arguments.length) return;
+	FourStateComponent.prototype.constructor.call(this, env, layer, do_render);
 }
 
 Button.prototype = new FourStateComponent();
 Button.prototype.constructor = Button;
+
+
+Button.prototype.process_arguments = function () {
+	var args = this.obj.component_arguments;
+	args = fabric.util.object.multi_extend({}, {'state':'disabled'}, args);
+	this.setState(args.state);
+	Layer.prototype.process_arguments.call(this);
+
+}
+
 
