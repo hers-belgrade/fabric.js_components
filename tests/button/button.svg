@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="120.21875"
+   height="50.84375"
+   id="svg6939"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="button.svg">
+  <defs
+     id="defs6941">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient7885">
+      <stop
+         style="stop-color:#ff11ff;stop-opacity:1;"
+         offset="0"
+         id="stop7887" />
+      <stop
+         style="stop-color:#ff11ff;stop-opacity:0;"
+         offset="1"
+         id="stop7889" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13166"
+       id="linearGradient8128"
+       gradientUnits="userSpaceOnUse"
+       x1="423.30878"
+       y1="426.83456"
+       x2="423.53015"
+       y2="467.76071"
+       gradientTransform="translate(-436.59733,-454.6063)" />
+    <linearGradient
+       id="linearGradient13166">
+      <stop
+         style="stop-color:#686262;stop-opacity:1;"
+         offset="0"
+         id="stop13168" />
+      <stop
+         id="stop13310"
+         offset="0.5"
+         style="stop-color:#5d5858;stop-opacity:0.49803922;" />
+      <stop
+         style="stop-color:#524e4e;stop-opacity:0;"
+         offset="1"
+         id="stop13170" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13349"
+       id="linearGradient13339"
+       gradientUnits="userSpaceOnUse"
+       x1="423.30878"
+       y1="426.83456"
+       x2="423.53015"
+       y2="467.76071"
+       gradientTransform="translate(-433.30815,-457.56441)" />
+    <linearGradient
+       id="linearGradient13349">
+      <stop
+         style="stop-color:#66b2ff;stop-opacity:1;"
+         offset="0"
+         id="stop13351" />
+      <stop
+         id="stop13353"
+         offset="1"
+         style="stop-color:#0066cc;stop-opacity:0.49803922;" />
+      <stop
+         style="stop-color:#004c99;stop-opacity:1;"
+         offset="1"
+         id="stop13355" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13312"
+       id="linearGradient13377"
+       gradientUnits="userSpaceOnUse"
+       x1="423.30878"
+       y1="426.83456"
+       x2="423.53015"
+       y2="467.76071"
+       gradientTransform="translate(-433.30815,-457.56441)" />
+    <linearGradient
+       id="linearGradient13312">
+      <stop
+         id="stop13314"
+         offset="0"
+         style="stop-color:#0066cc;stop-opacity:1" />
+      <stop
+         id="stop13318"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient13166"
+       id="linearGradient13308"
+       x1="423.30878"
+       y1="426.83456"
+       x2="423.53015"
+       y2="467.76071"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-433.30815,-457.56441)" />
+    <linearGradient
+       id="linearGradient6972">
+      <stop
+         style="stop-color:#686262;stop-opacity:1;"
+         offset="0"
+         id="stop6974" />
+      <stop
+         id="stop6976"
+         offset="0.5"
+         style="stop-color:#5d5858;stop-opacity:0.49803922;" />
+      <stop
+         style="stop-color:#524e4e;stop-opacity:0;"
+         offset="1"
+         id="stop6978" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7885"
+       id="linearGradient7891"
+       x1="-50.185211"
+       y1="-6.5627452"
+       x2="34.884125"
+       y2="-6.5627452"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="196.67779"
+     inkscape:cy="-237.54589"
+     inkscape:document-units="px"
+     inkscape:current-layer="buy_in_do_buyin_button_enabled"
+     showgrid="false"
+     inkscape:window-width="1680"
+     inkscape:window-height="1026"
+     inkscape:window-x="1680"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <metadata
+     id="metadata6944">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0.775107,3.432668)">
+    <g
+       inkscape:groupmode="layer"
+       id="buy_in_do_buyin_button"
+       inkscape:label="buy_in_do_buyin_button"
+       style="display:inline"
+       transform="translate(72.193643,30.723582)">
+      <g
+         inkscape:groupmode="layer"
+         id="buy_in_do_buyin_button_enabled"
+         inkscape:label="buy_in_do_buyin_button_enabled"
+         style="fill:#817f7f;fill-opacity:1;display:inline">
+        <rect
+           style="opacity:0.82716047;fill:#5b5858;fill-opacity:0.51141555;fill-rule:nonzero;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect13290"
+           width="116.80536"
+           height="47.784019"
+           x="-72.907928"
+           y="-31.145449"
+           ry="2.3670442"
+           rx="2.3228338" />
+        <rect
+           style="opacity:0.82716047;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect13296"
+           width="115.92037"
+           height="46.899071"
+           x="-72.465485"
+           y="-30.703005"
+           ry="2.1016114"
+           rx="1.9910003" />
+        <rect
+           style="opacity:0.82716047;fill:url(#linearGradient8128);fill-opacity:1;fill-rule:nonzero;stroke:#918e8e;stroke-width:0.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect13300"
+           width="109.50515"
+           height="41.036854"
+           x="-69.368378"
+           y="-27.605898"
+           ry="1.9910004" />
+        <text
+           xml:space="preserve"
+           style="font-size:18px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;fill:#ff0000;fill-opacity:1;font-family:Arial Narrow;-inkscape-font-specification:Arial Narrow Bold Condensed;opacity:1"
+           x="-51.670563"
+           y="-1.9440929"
+           id="text13321">Do Buy In</text>
+      </g>
+      <g
+         style="fill:#817f7f;fill-opacity:1;display:none"
+         inkscape:label="buy_in_do_buyin_button_hover"
+         id="buy_in_do_buyin_button_hover"
+         inkscape:groupmode="layer">
+        <rect
+           rx="2.3228338"
+           ry="2.3670442"
+           y="-34.103519"
+           x="-69.618752"
+           height="47.784019"
+           width="116.80536"
+           id="rect13329"
+           style="opacity:0.82716047;fill:#5b5858;fill-opacity:0.51141555;fill-rule:nonzero;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        <rect
+           rx="1.9910003"
+           ry="2.1016114"
+           y="-33.661076"
+           x="-69.176308"
+           height="46.899071"
+           width="115.92037"
+           id="rect13331"
+           style="opacity:0.82716047;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        <rect
+           ry="1.9910004"
+           y="-30.563969"
+           x="-66.079201"
+           height="41.036854"
+           width="109.50515"
+           id="rect13333"
+           style="opacity:0.82716047;fill:url(#linearGradient13339);fill-opacity:1;fill-rule:nonzero;stroke:#66b2ff;stroke-width:0.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        <text
+           id="text13335"
+           y="-4.902195"
+           x="-48.381386"
+           style="font-size:18px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;fill:#ffffff;fill-opacity:1;font-family:Arial Narrow;-inkscape-font-specification:Arial Narrow Bold Condensed"
+           xml:space="preserve">Do Buy In</text>
+      </g>
+      <g
+         inkscape:groupmode="layer"
+         id="buy_in_do_buyin_button_pressed"
+         inkscape:label="buy_in_do_buyin_button_pressed"
+         style="fill:#817f7f;fill-opacity:1;display:none">
+        <rect
+           style="opacity:0.82716047;fill:#5b5858;fill-opacity:0.51141555;fill-rule:nonzero;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect13359"
+           width="116.80536"
+           height="47.784019"
+           x="-69.618752"
+           y="-34.103519"
+           ry="2.3670442"
+           rx="2.3228338" />
+        <rect
+           style="opacity:0.82716047;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect13361"
+           width="115.92037"
+           height="46.899071"
+           x="-69.176308"
+           y="-33.661076"
+           ry="2.1016114"
+           rx="1.9910003" />
+        <rect
+           style="opacity:0.82716047;fill:url(#linearGradient13377);fill-opacity:1;fill-rule:nonzero;stroke:#0080ff;stroke-width:0.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect13363"
+           width="109.50515"
+           height="41.036854"
+           x="-66.079201"
+           y="-30.563969"
+           ry="1.9910004" />
+        <text
+           xml:space="preserve"
+           style="font-size:18px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;fill:#ffffff;fill-opacity:1;font-family:Arial Narrow;-inkscape-font-specification:Arial Narrow Bold Condensed"
+           x="-48.381386"
+           y="-4.902195"
+           id="text13365">Do Buy In</text>
+      </g>
+      <g
+         style="opacity:0.51028807;fill:#817f7f;fill-opacity:1;display:none"
+         inkscape:label="buy_in_do_buyin_button_disabled"
+         id="buy_in_do_buyin_button_disabled"
+         inkscape:groupmode="layer">
+        <rect
+           rx="2.3228338"
+           ry="2.3670442"
+           y="-34.103519"
+           x="-69.618752"
+           height="47.784019"
+           width="116.80536"
+           id="rect13389"
+           style="opacity:0.82716047;fill:#5b5858;fill-opacity:0.51141555;fill-rule:nonzero;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        <rect
+           rx="1.9910003"
+           ry="2.1016114"
+           y="-33.661076"
+           x="-69.176308"
+           height="46.899071"
+           width="115.92037"
+           id="rect13391"
+           style="opacity:0.82716047;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        <rect
+           ry="1.9910004"
+           y="-30.563969"
+           x="-66.079201"
+           height="41.036854"
+           width="109.50515"
+           id="rect13393"
+           style="opacity:0.82716047;fill:url(#linearGradient13308);fill-opacity:1;fill-rule:nonzero;stroke:#918e8e;stroke-width:0.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        <text
+           id="text13395"
+           y="-4.902195"
+           x="-48.381386"
+           style="font-size:18px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;fill:#ffffff;fill-opacity:1;font-family:Arial Narrow;-inkscape-font-specification:Arial Narrow Bold Condensed"
+           xml:space="preserve">Do Buy In</text>
+      </g>
+    </g>
+  </g>
+</svg>

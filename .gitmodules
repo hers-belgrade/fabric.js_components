@@ -1,0 +1,3 @@
+[submodule "tests/lib/fabric.js"]
+	path = tests/lib/fabric.js
+	url = git@github.com:hers-belgrade/fabric.js.git

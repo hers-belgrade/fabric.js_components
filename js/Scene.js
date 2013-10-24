@@ -23,6 +23,10 @@ function Scene (config, canvas) {
 		return fabric_helpers.find_path(this.loaded, path);
 	}
 }
+Scene.prototype.graphic_components_ready = function (elements) {
+	///Simple scene expects only graphic_components ....
+	this.ready();
+}
 
 Scene.prototype.render = function () { this.canvas.renderAll(); }
 Scene.prototype.ready = function () {

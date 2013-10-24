@@ -22,13 +22,28 @@ fabric_helpers.find_event_target = function (root) {
 	return fabric_helpers.find_element_with_attribute(root, 'inkscape:event_target', 'true');
 }
 
-fabric_helpers.find_path = function (resources, path) {
+fabric_helpers.find_path_objs = function (resources, path) {
+	var ret = [resources];
 	var el = resources;
 	var p = path.split('/');
 	for (var i in p) {
 		el = el[p[i]];
+		ret.push(el);
 	}
-	return el;
+	return ret;
+}
+
+fabric_helpers.find_path = function (resources, path) {
+	var objs = fabric_helpers.find_path_objs(resources, path);
+	return objs.pop();
+}
+
+fabric_helpers.get_path_alias_map = function (struct,map) {
+	var ret = {};
+	for (var i in map) {
+		ret[i] = fabric_helpers.find_path(struct, map[i]);
+	}
+	return ret;
 }
 
 

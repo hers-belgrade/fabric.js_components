@@ -1,14 +1,15 @@
 function GUI_Component (path, canvas, struct,config, ready) {
 	if (!struct) return;
 	struct.path = function () {return path;}
+	struct.notify_ready = function () {ready.call(this)}
 }
 
 /*
  * Create component from loaded function immediately...
  */
-function Immediate_GUI_Component (name,canvas, struct,config, ready) {
+function Immediate_GUI_Component (path, canvas, struct, config, ready) {
 	if (!struct) return;
-	GUI_Component(name, canvas, struct,config, ready);
+	GUI_Component(path, canvas, struct,config, ready);
 
 
 	config = fabric.util.object.extend(
@@ -20,45 +21,48 @@ function Immediate_GUI_Component (name,canvas, struct,config, ready) {
 	(config.auto_add) && canvas.add(struct);
 	(config.init_visible) ? struct.show() : struct.hide();
 	//call ready right away ... 
-	('function' === typeof(ready)) && ready.call(struct);
+	('function' === typeof(ready)) && struct.notify_ready();
 }
 
 /**Factory
  *
  */
-Create_GUI_Components = function (resources,canvas, items, success_cb, failed_cb) {
-	var got_it = {};
+Create_GUI_Components = function (_resources,_canvas, _items, _success_cb, _failed_cb) {
 
-	var failed = function(r) {
-		console.warn(r);
-		('function' === typeof(failed_cb)) && failed_cb(r);
-		return undefined;
-	}
-
-	var done = function (item) {
-		got_it[item.path()] = item;
-		for (var i in got_it) {
-			if (!got_it[i]) return;
+	function Registry (done) {
+		var got_it = {};
+		this.register = function (items) {
+			for (var i in items) got_it[items[i].path] = false;
 		}
-		console.log('jel se ovo ikad desilo');
-		('function' === typeof(success_cb)) && success_cb(got_it);
+		this.note = function (path, obj){
+			got_it[path] = obj;
+			for (var i in got_it) {if (!got_it[i]) return;}
+			('function' === typeof(done)) && done(got_it);
+		}
 	}
-	for (var i in items) {
-		got_it[items[i].path] = false;
-	}
 
+	(function (resources,canvas, items, success_cb, failed_cb){
+		var reg = new Registry(success_cb);
+		reg.register(items);
 
-	for (var i in items) {
-		(function (item) {
-			var f = item.type;
-			if ('function' !== typeof(f)) return failed('Invalid constructor for '+item.name);
-			var s = fabric_helpers.find_path(resources,item.path);
-			if (!s) failed('Invalid path '+item.path);
+		var failed = function(r) {
+			console.warn(r);
+			('function' === typeof(failed_cb)) && failed_cb(r);
+			return undefined;
+		}
 
-			var si = f(item.path , canvas, s, item.config, function () {
-				done(this);
-			});
+		for (var i in items) {
+			(function (item) {
+				var f = item.type;
+				if ('function' !== typeof(f)) return failed('Invalid constructor for '+item.name);
+				var s = fabric_helpers.find_path(resources,item.path);
+				if (!s) failed('Invalid path '+item.path);
 
-		})(items[i]);
-	}
+				var si = f(item.path , canvas, s, item.config, function () {
+					reg.note(item.path, this);
+				});
+
+			})(items[i]);
+		}
+	})(_resources,_canvas, _items, _success_cb, _failed_cb);
 }
