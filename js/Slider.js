@@ -89,7 +89,7 @@ function Slider(path, canvas, struct, config, ready) {
 			var area_el = {
 				'mouse:move' : function (obj) {
 					if (!working) return;
-					update_position(obj.e.x - handle_half);
+					update_position(obj.e.x - area.oCoords.tl.x - handle_half);
 				},
 				'mouse:down': function () {
 					clicking = true;
@@ -97,7 +97,7 @@ function Slider(path, canvas, struct, config, ready) {
 				'mouse:up': function (obj) {
 					if (working) return stop_moving();
 					if (clicking) {
-						update_position(obj.e.x - handle_half);
+						update_position(obj.e.x - area.oCoords.tl.x - handle_half);
 					}
 				},
 				'object:out':stop_moving
