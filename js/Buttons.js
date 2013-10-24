@@ -17,6 +17,12 @@ function SVGStateableRenderer (path, canvas, struct, config, ready ) {
 
 	//// path should be specified relative to this struct
 	var local = {
+		enable: function () {
+			if (this.state === 'disabled') this.setState('enabled');
+		},
+		disable : function () {
+			this.setState('disabled');
+		},
 		setState : function (state) {
 			if (!state) return;
 			var self = this;

@@ -24,7 +24,19 @@ function Slider(path, canvas, struct, config, ready) {
 		_notifySlider: function (val) {
 			var should_fire = (this.currentVal != val);
 			this.currentSliderVal = val;
-			should_fire && (true || this.fire('slider:changed', {current: val})) && false && console.log(this.currentSliderVal);
+			should_fire && (this.fire('slider:changed', {current: val})||true) && false && console.log(this.currentSliderVal);
+		},
+		step_up : function () {
+			this.setSliderValue(this.currentSliderVal + this.Slider_range.step);
+		},
+		step_down: function () {
+			this.setSliderValue(this.currentSliderVal - this.Slider_range.step);
+		},
+		setMax: function () {
+			this.setSliderValue(this.Slider_range.max);
+		},
+		setMin: function () {
+			this.setSliderValue(this.Slider_range.min);
 		},
 		setSliderValue: function (val){
 			if (isNaN(val) || !this.Slider_range|| val < this.Slider_range.min || val > this.Slider_range.max) throw "Invalid argument to set";
@@ -76,8 +88,8 @@ function Slider(path, canvas, struct, config, ready) {
 					x = min + (temp_current*diff) / range_diff;
 				}
 
-				self._setSlider(x) ;
 				self._notifySlider(temp_current);
+				self._setSlider(x) ;
 			}
 
 

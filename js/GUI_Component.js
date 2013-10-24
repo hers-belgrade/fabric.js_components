@@ -37,7 +37,7 @@ Create_GUI_Components = function (_resources,_canvas, _items, _success_cb, _fail
 		this.note = function (path, obj){
 			got_it[path] = obj;
 			for (var i in got_it) {if (!got_it[i]) return;}
-			('function' === typeof(done)) && done(got_it);
+			('function' === typeof(done)) && done.call(_resources,got_it);
 		}
 	}
 
