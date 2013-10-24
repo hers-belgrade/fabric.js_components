@@ -1,11 +1,12 @@
 function Slider(path, canvas, struct, config, ready) {
 	if (!struct) return;
-	var Slider_elements = {};
-	for (var i in config.components) {
-		Slider_elements[i] = fabric_helpers.find_path(struct, config.components[i]);
-	}
+
+	var area = fabric_helpers.find_path(struct, config.elements.area);
+	var handle = fabric_helpers.find_path(struct, config.elements.handle_group);
+	var target = fabric_helpers.find_path(struct, config.elements.handle_group+'/'+config.elements.handle_event_target);
+	var handle_half = target.width/2;
+
 	var local = {
-		Slider_elements: Slider_elements,
 		setupSlider:function (range) {
 			range = range || {min:0, max:100};
 			if (isNaN(range.min) || isNaN(range.max) || range.min > range.max) throw "Invalid range";
@@ -16,7 +17,6 @@ function Slider(path, canvas, struct, config, ready) {
 			('undefined' !== typeof(this.currentSliderVal)) && this.setSliderValue(this.currentSliderVal);
 		},
 		_setSlider: function (pos) {
-			var handle = this.Slider_elements.handle;
 			if (handle.get('left') === pos) return;
 			handle.set({left: pos});
 			canvas.renderAll();
@@ -34,12 +34,10 @@ function Slider(path, canvas, struct, config, ready) {
 				if (val < range.min) val = range.min;
 			}
 
-			var area = this.Slider_elements.area;
-			var handle = this.Slider_elements.handle;
-			var handle_half = handle.width/2;
+			//var max = area.left + area.width - target.width;
 
-			var max = area.left + area.width - handle.width;
-			var min = area.left;
+			var max = area.width - target.width;
+			var min = 0;
 			var diff = max - min;
 
 			var x = min + (val / (range.max - range.min)) * diff;
@@ -50,30 +48,25 @@ function Slider(path, canvas, struct, config, ready) {
 		},
 		initSlider : function (range, init_val) {
 			var self = this;
-
 			this.uninitSlider();
 			this.setupSlider(range);
 			//helper functions
+
 			function stop_moving () {
 				if (!working) return;
-				var handle = self.Slider_elements.handle;
 				working = false;
 				handle.set({'opacity':1});
 				canvas.renderAll();
 			}
 
 			function update_position (x) {
-				var area = self.Slider_elements.area;
-				var handle = self.Slider_elements.handle;
-				var handle_half = handle.width/2;
-
-				var max = area.left + area.width - handle.width;
-				var min = area.left;
+				var max = area.width - target.width;
+				var min = 0;
 				var diff = max - min;
 
 				var range = self.Slider_range;
-				if (x > max) pos = max;
-				if (x < min) pos = min;
+				if (x > max) x = max;
+				if (x < min) x = min;
 
 				var range_diff = range.max - range.min;
 				var temp_current = (x - min) * (range_diff) / diff;
@@ -92,8 +85,6 @@ function Slider(path, canvas, struct, config, ready) {
 			var clicking = false;
 
 
-			var handle_half = this.Slider_elements.handle.width/2;
-
 			this.Slider_event_handlers = {};
 			var area_el = {
 				'mouse:move' : function (obj) {
@@ -105,7 +96,9 @@ function Slider(path, canvas, struct, config, ready) {
 				},
 				'mouse:up': function (obj) {
 					if (working) return stop_moving();
-					if (clicking) update_position(obj.e.x - handle_half);
+					if (clicking) {
+						update_position(obj.e.x - handle_half);
+					}
 				},
 				'object:out':stop_moving
 			}
@@ -128,8 +121,8 @@ function Slider(path, canvas, struct, config, ready) {
 			this.Slider_event_handlers.area = area_el;
 			this.Slider_event_handlers.handle = handle_el;
 
-			this.Slider_elements.area.on (area_el);
-			this.Slider_elements.handle.on (handle_el);
+			area.on (area_el);
+			target.on (handle_el);
 
 			this.setSliderValue( ('undefined' !== typeof(init_val)) ? init_val : this.Slider_range.min);
 		}
