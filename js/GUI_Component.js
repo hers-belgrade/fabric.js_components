@@ -1,7 +1,9 @@
 function GUI_Component (path, canvas, struct,config, ready) {
 	if (!struct) return;
+
 	struct.path = function () {return path;}
 	struct.notify_ready = function () {ready.call(this)}
+	struct.get_el = function (path) {return fabric_helpers.find_path(this, path)};
 }
 
 /*
@@ -14,12 +16,14 @@ function Immediate_GUI_Component (path, canvas, struct, config, ready) {
 
 	config = fabric.util.object.extend(
 			{}, 
-			{ 'init_visible': true, 'auto_add': false}, 
+			{ 'init_visible': true, 'auto_add': false},
 			config
 	);
 
 	(config.auto_add) && canvas.add(struct);
 	(config.init_visible) ? struct.show() : struct.hide();
+
+
 	//call ready right away ... 
 	('function' === typeof(ready)) && struct.notify_ready();
 }
@@ -32,7 +36,9 @@ Create_GUI_Components = function (_resources,_canvas, _items, _success_cb, _fail
 	function Registry (done) {
 		var got_it = {};
 		this.register = function (items) {
-			for (var i in items) got_it[items[i].path] = false;
+			for (var i in items) {
+				got_it[items[i].path] = false;
+			}
 		}
 		this.note = function (path, obj){
 			got_it[path] = obj;
@@ -46,7 +52,7 @@ Create_GUI_Components = function (_resources,_canvas, _items, _success_cb, _fail
 		reg.register(items);
 
 		var failed = function(r) {
-			console.warn(r);
+			console.warn.apply(console,arguments);
 			('function' === typeof(failed_cb)) && failed_cb(r);
 			return undefined;
 		}
@@ -54,7 +60,7 @@ Create_GUI_Components = function (_resources,_canvas, _items, _success_cb, _fail
 		for (var i in items) {
 			(function (item) {
 				var f = item.type;
-				if ('function' !== typeof(f)) return failed('Invalid constructor for '+item.name);
+				if ('function' !== typeof(f)) return failed('Invalid constructor for ',item);
 				var s = fabric_helpers.find_path(resources,item.path);
 				if (!s) failed('Invalid path '+item.path);
 

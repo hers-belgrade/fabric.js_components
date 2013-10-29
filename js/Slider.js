@@ -7,14 +7,14 @@ function Slider(path, canvas, struct, config, ready) {
 	var handle_half = target.width/2;
 
 	var local = {
-		setupSlider:function (range) {
+		setupSlider:function (range, val) {
 			range = range || {min:0, max:100};
 			if (isNaN(range.min) || isNaN(range.max) || range.min > range.max) throw "Invalid range";
 			if (!range.step) range.step = 0;
 
 			if (isNaN (range.step) || range.step < 0 || range.step > (range.max - range.min)) throw "Invalid step";
 			this.Slider_range = range;
-			('undefined' !== typeof(this.currentSliderVal)) && this.setSliderValue(this.currentSliderVal);
+			!isNaN(val) && this.setSliderValue(val);
 		},
 		_setSlider: function (pos) {
 			if (handle.get('left') === pos) return;
@@ -28,6 +28,9 @@ function Slider(path, canvas, struct, config, ready) {
 		},
 		step_up : function () {
 			this.setSliderValue(this.currentSliderVal + this.Slider_range.step);
+		},
+		val: function () {
+			return this.currentSliderVal;
 		},
 		step_down: function () {
 			this.setSliderValue(this.currentSliderVal - this.Slider_range.step);
@@ -52,93 +55,173 @@ function Slider(path, canvas, struct, config, ready) {
 			var min = 0;
 			var diff = max - min;
 
-			var x = min + (val / (range.max - range.min)) * diff;
+			var x = min + ((val - range.min) / (range.max - range.min)) * diff;
 			this._setSlider(x);
 			this._notifySlider(val);
 		},
-		uninitSlider: function () {
+		enable: function () {
+			this.slider_enabled = true;
 		},
-		initSlider : function (range, init_val) {
-			var self = this;
-			this.uninitSlider();
-			this.setupSlider(range);
-			//helper functions
-
-			function stop_moving () {
-				if (!working) return;
-				working = false;
-				handle.set({'opacity':1});
-				canvas.renderAll();
-			}
-
-			function update_position (x) {
-				var max = area.width - target.width;
-				var min = 0;
-				var diff = max - min;
-
-				var range = self.Slider_range;
-				if (x > max) x = max;
-				if (x < min) x = min;
-
-				var range_diff = range.max - range.min;
-				var temp_current = (x - min) * (range_diff) / diff;
-
-				if (range.step) {
-					temp_current = Math.floor(temp_current/range.step)*range.step;
-					x = min + (temp_current*diff) / range_diff;
-				}
-
-				self._notifySlider(temp_current);
-				self._setSlider(x) ;
-			}
-
-
-			var working = false;
-			var clicking = false;
-
-
-			this.Slider_event_handlers = {};
-			var area_el = {
-				'mouse:move' : function (obj) {
-					if (!working) return;
-					update_position(obj.e.x - area.oCoords.tl.x - handle_half);
-				},
-				'mouse:down': function () {
-					clicking = true;
-				},
-				'mouse:up': function (obj) {
-					if (working) return stop_moving();
-					if (clicking) {
-						update_position(obj.e.x - area.oCoords.tl.x - handle_half);
-					}
-				},
-				'object:out':stop_moving
-			}
-			var handle_el = {
-				'mouse:down': function (obj) {
-					working = true;
-					this.set({'opacity': 0.5});
-					canvas.renderAll();
-				},
-				'mouse:up': function (e) {
-					working = false;
-					this.set({'opacity': 1});
-					canvas.renderAll();
-				},
-				'object:over': function (e) {
-					this.set({'opacity': 0.8});
-					canvas.renderAll();
-				},
-			}
-			this.Slider_event_handlers.area = area_el;
-			this.Slider_event_handlers.handle = handle_el;
-
-			area.on (area_el);
-			target.on (handle_el);
-
-			this.setSliderValue( ('undefined' !== typeof(init_val)) ? init_val : this.Slider_range.min);
+		disable:function () {
+			this.slider_enabled = false;
+			area.fire('object:out');
 		}
 	}
 	fabric.util.object.extend(struct, local);
-	Immediate_GUI_Component(path, canvas, struct, {init_visible:true}, ready);
+	Immediate_GUI_Component(path, canvas, struct, {init_visible:true}, function () {
+		var self = this;
+
+
+		var working = false;
+		var clicking = false;
+
+
+		function stop_moving () {
+			if (!working) return;
+			working = false;
+			handle.set({'opacity':1});
+			canvas.renderAll();
+		}
+
+		function update_position (x) {
+			var max = area.width - target.width;
+			var min = 0;
+			var diff = max - min;
+
+			var range = self.Slider_range;
+			if (x > max) x = max;
+			if (x < min) x = min;
+
+			var range_diff = range.max - range.min;
+			var temp_current = (x - min) * (range_diff) / diff;
+
+			if (range.step) {
+
+				var offset = temp_current - range.min;
+				offset = Math.floor(offset/range.step)*range.step;
+				temp_current = range.min+offset;
+				x = min + (temp_current*diff) / range_diff;
+			}
+
+			self._notifySlider(range.min+temp_current);
+			self._setSlider(x) ;
+		}
+
+		this.Slider_event_handlers = {};
+		var area_el = {
+			'mouse:move' : function (obj) {
+				if (!self.slider_enabled) return;
+				if (!working) return;
+				update_position(obj.e.x - area.oCoords.tl.x - handle_half);
+			},
+			'mouse:down': function () {
+				if (!self.slider_enabled) return;
+				clicking = true;
+			},
+			'mouse:up': function (obj) {
+				if (working) return stop_moving();
+				if (!self.slider_enabled) return;
+				if (clicking) {
+					update_position(obj.e.x - area.oCoords.tl.x - handle_half);
+				}
+			},
+			'object:out':stop_moving
+		}
+		var handle_el = {
+			'mouse:down': function (obj) {
+				if (!self.slider_enabled) return;
+				working = true;
+				this.set({'opacity': 0.5});
+				canvas.renderAll();
+			},
+			'mouse:up': function (e) {
+				if (!self.slider_enabled) return;
+				working = false;
+				this.set({'opacity': 1});
+				canvas.renderAll();
+			},
+			'object:over': function (e) {
+				if (!self.slider_enabled) return;
+				this.set({'opacity': 0.8});
+				canvas.renderAll();
+			},
+		}
+		this.Slider_event_handlers.area = area_el;
+		this.Slider_event_handlers.handle = handle_el;
+
+		area.on (area_el);
+		target.on (handle_el);
+		struct.enable();
+
+		ready.call(struct);
+	});
+}
+
+function SliderWithButtons (path, canvas, struct, config, ready) {
+	if (!struct) return;
+	var buttons = ['min_button', 'max_button', 'plus_button', 'minus_button'];
+	var batch = BatchButtons(config, buttons);
+	var to_create = batch.to_create;
+	var alias_map = batch.alias_map;
+
+	var se = config.elements.slider;
+	to_create.push ({
+		type: Slider,
+		path: se.path,
+		config: {
+			elements: se.elements
+		}
+	});
+	alias_map['slider'] = se.path;
+	var local = {
+		SWB_Elements: fabric_helpers.get_path_alias_map(struct, alias_map),
+		setupSlider: function (range, val) {
+			return this.SWB_Elements.slider.setupSlider(range, val);
+		},
+		setSliderValue: function (val) {
+			return this.SWB_Elements.slider.setSliderValue(val);
+		},
+		enable: function () {
+			return this.SWB_Elements.slider.enable();
+		},
+		disable: function () {
+			return this.SWB_Elements.slider.disable();
+		},
+		val : function () {
+			return this.SWB_Elements.slider.val();
+		}
+	}
+	GUI_Component(path, canvas, struct,to_create, ready);
+	Create_GUI_Components (struct, canvas, to_create, function (elements) {
+		fabric.util.object.extend(this, local);
+		var el = this.SWB_Elements;
+		var self = this;
+		function setValue (val) {
+			if (val >= el.slider.Slider_range.max) { 
+				el.max_button.disable();
+				el.plus_button.disable();
+			}else{
+				el.max_button.enable();
+				el.plus_button.enable();
+			}
+			if (val <= el.slider.Slider_range.min) {
+				el.minus_button.disable();
+				el.min_button.disable();
+			}else{
+				el.minus_button.enable();
+				el.min_button.enable();
+			}
+			self.fire('slider:changed', {current: val});
+		}
+
+		el.slider.on ('slider:changed' , function (v) {
+			setValue(Math.floor(v.current));
+		});
+
+		el.minus_button.on('button:clicked', function () { el.slider.step_down(); });
+		el.plus_button.on('button:clicked', function () {el.slider.step_up();});
+		el.min_button.on('button:clicked', function () {el.slider.setMin();});
+		el.max_button.on('button:clicked', function () {el.slider.setMax();});
+		this.notify_ready();
+	});
 }
