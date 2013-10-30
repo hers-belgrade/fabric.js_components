@@ -3,8 +3,26 @@ function Slider(path, canvas, struct, config, ready) {
 
 	var area = fabric_helpers.find_path(struct, config.elements.area);
 	var handle = fabric_helpers.find_path(struct, config.elements.handle_group);
+
+	///TODO: move calculus in order to support current transformations
+
+	var matmult = fabric.util.multiplyTransformMatrices;
+	var target_matrix = [1,0,0,1,0,0];
+
+	var target_path_objs = fabric_helpers.find_path_objs(struct,config.elements.handle_group);
+	for (var i in target_path_objs) {
+		var ct = target_path_objs[i].transformMatrix;
+		if (!ct) continue;
+		target_matrix = matmult(target_matrix, ct);
+	}
+	var target_scale = Math.sqrt (target_matrix[0] * target_matrix[0] + target_matrix[1]*target_matrix[1]);
+
 	var target = fabric_helpers.find_path(struct, config.elements.handle_group+'/'+config.elements.handle_event_target);
-	var handle_half = target.width/2;
+
+	var handle_width = target.width*target_scale;
+	var handle_half = handle_width/2;
+
+	var initial_offset = (handle.transformMatrix) ? handle.transformMatrix[4] : 0;
 
 	var local = {
 		setupSlider:function (range, val) {
@@ -17,8 +35,8 @@ function Slider(path, canvas, struct, config, ready) {
 			!isNaN(val) && this.setSliderValue(val);
 		},
 		_setSlider: function (pos) {
-			if (handle.get('left') === pos) return;
-			handle.set({left: pos});
+			if (!handle.transformMatrix) handle.transformMatrix = [1,0,0,1,0,0];
+			handle.transformMatrix[4] = initial_offset + pos/target_scale;
 			canvas.renderAll();
 		},
 		_notifySlider: function (val) {
@@ -49,9 +67,7 @@ function Slider(path, canvas, struct, config, ready) {
 				if (val < range.min) val = range.min;
 			}
 
-			//var max = area.left + area.width - target.width;
-
-			var max = area.width - target.width;
+			var max = area.width - handle_width;
 			var min = 0;
 			var diff = max - min;
 
@@ -84,7 +100,8 @@ function Slider(path, canvas, struct, config, ready) {
 		}
 
 		function update_position (x) {
-			var max = area.width - target.width;
+
+			var max = area.width - handle_width;
 			var min = 0;
 			var diff = max - min;
 
@@ -104,15 +121,19 @@ function Slider(path, canvas, struct, config, ready) {
 			}
 
 			self._notifySlider(range.min+temp_current);
-			self._setSlider(x) ;
+			self._setSlider(x);
 		}
 
 		this.Slider_event_handlers = {};
+		function doDaHandle(p){
+			var lp = area.globalToLocal(p);
+			update_position(lp.x - handle_half);
+		};
 		var area_el = {
 			'mouse:move' : function (obj) {
 				if (!self.slider_enabled) return;
 				if (!working) return;
-				update_position(obj.e.x - area.oCoords.tl.x - handle_half);
+				doDaHandle(obj.e);
 			},
 			'mouse:down': function () {
 				if (!self.slider_enabled) return;
@@ -122,11 +143,11 @@ function Slider(path, canvas, struct, config, ready) {
 				if (working) return stop_moving();
 				if (!self.slider_enabled) return;
 				if (clicking) {
-					update_position(obj.e.x - area.oCoords.tl.x - handle_half);
+					doDaHandle(obj.e);
 				}
 			},
-			'object:out':stop_moving
-		}
+			'object:out':stop_moving,
+		};
 		var handle_el = {
 			'mouse:down': function (obj) {
 				if (!self.slider_enabled) return;
@@ -145,7 +166,7 @@ function Slider(path, canvas, struct, config, ready) {
 				this.set({'opacity': 0.8});
 				canvas.renderAll();
 			},
-		}
+		};
 		this.Slider_event_handlers.area = area_el;
 		this.Slider_event_handlers.handle = handle_el;
 
@@ -198,18 +219,18 @@ function SliderWithButtons (path, canvas, struct, config, ready) {
 		var self = this;
 		function setValue (val) {
 			if (val >= el.slider.Slider_range.max) { 
-				el.max_button.disable();
-				el.plus_button.disable();
+				el.max_button && el.max_button.disable();
+				el.plus_button && el.plus_button.disable();
 			}else{
-				el.max_button.enable();
-				el.plus_button.enable();
+				el.max_button && el.max_button.enable();
+				el.plus_button && el.plus_button.enable();
 			}
 			if (val <= el.slider.Slider_range.min) {
-				el.minus_button.disable();
-				el.min_button.disable();
+				el.minus_button && el.minus_button.disable();
+				el.min_button && el.min_button.disable();
 			}else{
-				el.minus_button.enable();
-				el.min_button.enable();
+				el.minus_button && el.minus_button.enable();
+				el.min_button && el.min_button.enable();
 			}
 			self.fire('slider:changed', {current: val});
 		}
@@ -218,10 +239,10 @@ function SliderWithButtons (path, canvas, struct, config, ready) {
 			setValue(Math.floor(v.current));
 		});
 
-		el.minus_button.on('button:clicked', function () { el.slider.step_down(); });
-		el.plus_button.on('button:clicked', function () {el.slider.step_up();});
-		el.min_button.on('button:clicked', function () {el.slider.setMin();});
-		el.max_button.on('button:clicked', function () {el.slider.setMax();});
+		el.minus_button && el.minus_button.on('button:clicked', function () { el.slider.step_down(); });
+		el.plus_button && el.plus_button.on('button:clicked', function () {el.slider.step_up();});
+		el.min_button && el.min_button.on('button:clicked', function () {el.slider.setMin();});
+		el.max_button && el.max_button.on('button:clicked', function () {el.slider.setMax();});
 		this.notify_ready();
 	});
 }

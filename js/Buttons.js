@@ -130,6 +130,7 @@ function BatchButtons (config, buttons) {
 
 	for (var i in buttons) {
 		var b = config.elements[buttons[i]];
+		if (!b) continue;
 		alias_map[buttons[i]] = b.path;
 		var ts = {
 			type: Button,
