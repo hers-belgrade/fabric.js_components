@@ -46,8 +46,6 @@ fabric_helpers.get_path_alias_map = function (struct,map) {
 	return ret;
 }
 
-
-
 //group Layer helpers..
 var Layer = {
 	hideSubLayers : function (l,me_included, do_render) {

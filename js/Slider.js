@@ -1,25 +1,24 @@
 function Slider(path, canvas, struct, config, ready) {
 	if (!struct) return;
 
-	var area = fabric_helpers.find_path(struct, config.elements.area);
-	var handle = fabric_helpers.find_path(struct, config.elements.handle_group);
-
-	///TODO: move calculus in order to support current transformations
 
 	var matmult = fabric.util.multiplyTransformMatrices;
-	var target_matrix = [1,0,0,1,0,0];
+	var Matrix = fabric.util.Matrix;
 
 	var target_path_objs = fabric_helpers.find_path_objs(struct,config.elements.handle_group);
-	for (var i in target_path_objs) {
-		var ct = target_path_objs[i].transformMatrix;
-		if (!ct) continue;
-		target_matrix = matmult(target_matrix, ct);
-	}
-	var target_scale = Math.sqrt (target_matrix[0] * target_matrix[0] + target_matrix[1]*target_matrix[1]);
+	var handle = target_path_objs[target_path_objs.length-1];
+
+	var area_path_objs = fabric_helpers.find_path_objs(struct, config.elements.area);
+	var area = area_path_objs[area_path_objs.length-1];
+
+	var target_scale = Matrix.GetScale (Matrix.CalculateTransformToObject(target_path_objs));
+	var area_scale = Matrix.GetScale(Matrix.CalculateTransformToObject(area_path_objs));
 
 	var target = fabric_helpers.find_path(struct, config.elements.handle_group+'/'+config.elements.handle_event_target);
 
 	var handle_width = target.width*target_scale;
+	var area_width = area.width*area_scale;
+
 	var handle_half = handle_width/2;
 
 	var initial_offset = (handle.transformMatrix) ? handle.transformMatrix[4] : 0;
@@ -67,7 +66,8 @@ function Slider(path, canvas, struct, config, ready) {
 				if (val < range.min) val = range.min;
 			}
 
-			var max = area.width - handle_width;
+			///todo: recalculate this dimensions for skew
+			var max = area_width - handle_width;
 			var min = 0;
 			var diff = max - min;
 
@@ -100,8 +100,7 @@ function Slider(path, canvas, struct, config, ready) {
 		}
 
 		function update_position (x) {
-
-			var max = area.width - handle_width;
+			var max = area_width - handle_width;
 			var min = 0;
 			var diff = max - min;
 
@@ -127,7 +126,7 @@ function Slider(path, canvas, struct, config, ready) {
 		this.Slider_event_handlers = {};
 		function doDaHandle(p){
 			var lp = area.globalToLocal(p);
-			update_position(lp.x - handle_half);
+			update_position(lp.x*Math.abs(area_scale) - handle_half);
 		};
 		var area_el = {
 			'mouse:move' : function (obj) {
@@ -173,7 +172,6 @@ function Slider(path, canvas, struct, config, ready) {
 		area.on (area_el);
 		target.on (handle_el);
 		struct.enable();
-
 		ready.call(struct);
 	});
 }
@@ -186,13 +184,10 @@ function SliderWithButtons (path, canvas, struct, config, ready) {
 	var alias_map = batch.alias_map;
 
 	var se = config.elements.slider;
-	to_create.push ({
-		type: Slider,
-		path: se.path,
-		config: {
-			elements: se.elements
-		}
-	});
+	var _to_set = fabric.util.object.extend({config:{}},se,{type:Slider});
+	_to_set.config.elements = se.elements;
+
+	to_create.push (_to_set);
 	alias_map['slider'] = se.path;
 	var local = {
 		SWB_Elements: fabric_helpers.get_path_alias_map(struct, alias_map),
@@ -212,7 +207,7 @@ function SliderWithButtons (path, canvas, struct, config, ready) {
 			return this.SWB_Elements.slider.val();
 		}
 	}
-	GUI_Component(path, canvas, struct,to_create, ready);
+	GUI_Component(path, canvas, struct,config, ready);
 	Create_GUI_Components (struct, canvas, to_create, function (elements) {
 		fabric.util.object.extend(this, local);
 		var el = this.SWB_Elements;

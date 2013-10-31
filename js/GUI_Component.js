@@ -4,6 +4,7 @@ function GUI_Component (path, canvas, struct,config, ready) {
 	struct.path = function () {return path;}
 	struct.notify_ready = function () {ready.call(this)}
 	struct.get_el = function (path) {return fabric_helpers.find_path(this, path)};
+	if (config.mouse_event_sink) fabric_helpers.find_path(struct,config.mouse_event_sink.path).block_mouse_propagation();
 }
 
 /*

@@ -28,7 +28,7 @@ Scene.prototype.graphic_components_ready = function (elements) {
 	this.ready();
 }
 
-Scene.prototype.render = function () { this.canvas.renderAll(); }
+Scene.prototype.render = function () { this.canvas && this.canvas.renderAll(); }
 Scene.prototype.ready = function () {
 	throw "Ready not implemented";
 }
