@@ -1,75 +1,19 @@
-function GUI_Component (path, canvas, struct,config, ready) {
-	if (!struct) return;
-
-	struct.path = function () {return path;}
-	struct.notify_ready = function () {ready.call(this)}
-	struct.get_el = function (path) {return fabric_helpers.find_path(this, path)};
-	if (config.mouse_event_sink) fabric_helpers.find_path(struct,config.mouse_event_sink.path).block_mouse_propagation();
+function GUI_Component (svgobj,config) {
+	if (!svgobj) return;
+	if (config.mouse_event_sink) fabric_helpers.find_path(svgobj,config.mouse_event_sink.path).block_mouse_propagation();
 }
 
-/*
- * Create component from loaded function immediately...
- */
-function Immediate_GUI_Component (path, canvas, struct, config, ready) {
-	if (!struct) return;
-	GUI_Component(path, canvas, struct,config, ready);
-
-
-	config = fabric.util.object.extend(
-			{}, 
-			{ 'init_visible': true, 'auto_add': false},
-			config
-	);
-
-	(config.auto_add) && canvas.add(struct);
-	(config.init_visible) ? struct.show() : struct.hide();
-
-
-	//call ready right away ... 
-	('function' === typeof(ready)) && struct.notify_ready();
-}
 
 /**Factory
  *
  */
-Create_GUI_Components = function (_resources,_canvas, _items, _success_cb, _failed_cb) {
-
-	function Registry (done) {
-		var got_it = {};
-		this.register = function (items) {
-			for (var i in items) {
-				got_it[items[i].path] = false;
-			}
-		}
-		this.note = function (path, obj){
-			got_it[path] = obj;
-			for (var i in got_it) {if (!got_it[i]) return;}
-			('function' === typeof(done)) && done.call(_resources,got_it);
-		}
-	}
-
-	(function (resources,canvas, items, success_cb, failed_cb){
-		var reg = new Registry(success_cb);
-		reg.register(items);
-
-		var failed = function(r) {
-			console.warn.apply(console,arguments);
-			('function' === typeof(failed_cb)) && failed_cb(r);
-			return undefined;
-		}
-
-		for (var i in items) {
-			(function (item) {
-				var f = item.type;
-				if ('function' !== typeof(f)) return failed('Invalid constructor for ',item);
-				var s = fabric_helpers.find_path(resources,item.path);
-				if (!s) failed('Invalid path '+item.path);
-
-				var si = f(item.path , canvas, s, item.config, function () {
-					reg.note(item.path, this);
-				});
-
-			})(items[i]);
-		}
-	})(_resources,_canvas, _items, _success_cb, _failed_cb);
+Create_GUI_Components = function (rootsvgobj,items) {
+  for (var i in items) {
+    var item = items[i];
+    var f = (typeof item.type === 'function') ? item.type : GUI_Component;
+    var el = rootsvgobj.getObjectByPath(item.path);
+    if (el){
+      f(el, item.config);
+    }
+  }
 }

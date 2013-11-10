@@ -18,14 +18,10 @@ fabric_helpers.find_element_with_attribute = function (root, attr, val) {
 	return undefined;
 }
 
-fabric_helpers.find_event_target = function (root) {
-	return fabric_helpers.find_element_with_attribute(root, 'inkscape:event_target', 'true');
-}
-
 fabric_helpers.find_path_objs = function (resources, path) {
 	var ret = [resources];
 	var el = resources;
-	var p = path.split('/');
+	var p = path;//.split('/');
 	for (var i in p) {
 		el = el[p[i]];
 		ret.push(el);

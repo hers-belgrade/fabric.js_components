@@ -1,20 +1,20 @@
-function Slider(path, canvas, struct, config, ready) {
+function Slider(struct, config) {
 	if (!struct) return;
 
 
 	var matmult = fabric.util.multiplyTransformMatrices;
 	var Matrix = fabric.util.Matrix;
 
-	var target_path_objs = fabric_helpers.find_path_objs(struct,config.elements.handle_group);
+	var target_path_objs = struct.getObjectsByPath(config.elements.handle_group);
 	var handle = target_path_objs[target_path_objs.length-1];
 
-	var area_path_objs = fabric_helpers.find_path_objs(struct, config.elements.area);
+	var area_path_objs = struct.getObjectsByPath(config.elements.area);
 	var area = area_path_objs[area_path_objs.length-1];
 
 	var target_scale = Matrix.GetScale (Matrix.CalculateTransformToObject(target_path_objs));
 	var area_scale = Matrix.GetScale(Matrix.CalculateTransformToObject(area_path_objs));
 
-	var target = fabric_helpers.find_path(struct, config.elements.handle_group+'/'+config.elements.handle_event_target);
+	var target = struct.getObjectByPath(config.elements.handle_group.concat(config.elements.handle_event_target));
 
 	var handle_width = target.width*target_scale;
 	var area_width = area.width*area_scale;
@@ -84,7 +84,7 @@ function Slider(path, canvas, struct, config, ready) {
 		}
 	}
 	fabric.util.object.extend(struct, local);
-	Immediate_GUI_Component(path, canvas, struct, {init_visible:true}, function () {
+	GUI_Component(struct, {init_visible:true});
 		var self = this;
 
 
@@ -172,11 +172,9 @@ function Slider(path, canvas, struct, config, ready) {
 		area.on (area_el);
 		target.on (handle_el);
 		struct.enable();
-		ready.call(struct);
-	});
 }
 
-function SliderWithButtons (path, canvas, struct, config, ready) {
+function SliderWithButtons (struct, config) {
 	if (!struct) return;
 	var buttons = ['min_button', 'max_button', 'plus_button', 'minus_button'];
 	var batch = BatchButtons(config, buttons);
@@ -207,37 +205,35 @@ function SliderWithButtons (path, canvas, struct, config, ready) {
 			return this.SWB_Elements.slider.val();
 		}
 	}
-	GUI_Component(path, canvas, struct,config, ready);
-	Create_GUI_Components (struct, canvas, to_create, function (elements) {
-		fabric.util.object.extend(this, local);
-		var el = this.SWB_Elements;
-		var self = this;
-		function setValue (val) {
-			if (val >= el.slider.Slider_range.max) { 
-				el.max_button && el.max_button.disable();
-				el.plus_button && el.plus_button.disable();
-			}else{
-				el.max_button && el.max_button.enable();
-				el.plus_button && el.plus_button.enable();
-			}
-			if (val <= el.slider.Slider_range.min) {
-				el.minus_button && el.minus_button.disable();
-				el.min_button && el.min_button.disable();
-			}else{
-				el.minus_button && el.minus_button.enable();
-				el.min_button && el.min_button.enable();
-			}
-			self.fire('slider:changed', {current: val});
-		}
+	GUI_Component(struct,config);
+	var elements = Create_GUI_Components (struct, to_create);
+  fabric.util.object.extend(this, local);
+  var el = this.SWB_Elements;
+  var self = this;
+  function setValue (val) {
+    if (val >= el.slider.Slider_range.max) { 
+      el.max_button && el.max_button.disable();
+      el.plus_button && el.plus_button.disable();
+    }else{
+      el.max_button && el.max_button.enable();
+      el.plus_button && el.plus_button.enable();
+    }
+    if (val <= el.slider.Slider_range.min) {
+      el.minus_button && el.minus_button.disable();
+      el.min_button && el.min_button.disable();
+    }else{
+      el.minus_button && el.minus_button.enable();
+      el.min_button && el.min_button.enable();
+    }
+    self.fire('slider:changed', {current: val});
+  }
 
-		el.slider.on ('slider:changed' , function (v) {
-			setValue(Math.floor(v.current));
-		});
+  el.slider.on ('slider:changed' , function (v) {
+    setValue(Math.floor(v.current));
+  });
 
-		el.minus_button && el.minus_button.on('button:clicked', function () { el.slider.step_down(); });
-		el.plus_button && el.plus_button.on('button:clicked', function () {el.slider.step_up();});
-		el.min_button && el.min_button.on('button:clicked', function () {el.slider.setMin();});
-		el.max_button && el.max_button.on('button:clicked', function () {el.slider.setMax();});
-		this.notify_ready();
-	});
+  el.minus_button && el.minus_button.on('button:clicked', function () { el.slider.step_down(); });
+  el.plus_button && el.plus_button.on('button:clicked', function () {el.slider.step_up();});
+  el.min_button && el.min_button.on('button:clicked', function () {el.slider.setMin();});
+  el.max_button && el.max_button.on('button:clicked', function () {el.slider.setMax();});
 }
